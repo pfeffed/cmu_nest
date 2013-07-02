@@ -35,15 +35,19 @@ time_last_ac_change_detected = nil
 
   def index
     # db_client = initialize_database
-    threshold_time = @@short_motion_interval
-    # sensors, results = getRecordsInInterval(threshold_time, min_mac, max_mac)
-    # analysis = analyzeMotionReadings(unique_sensors_short, short_interval_results)
-    # count_array = []
-    # analysis.each do |k,v|
-    #   count_array.push(v['hit_count'] > 0 ? 1 : 0)
-    # end
-    # people_count = count_minimum_occupancy_cmil_front(count_array)
-    @room_empty = true #false if people_count > 0
+    threshold_time = Time.now - @@short_motion_interval - 10000
+    results = Readings.where("timestamp > #{threshold_time.to_i}").where("mac >= 10170401").where("mac <= 10170401")
+    @unique_sensors = results.map do |record|
+      record.mac
+    end
+    @unique_sensors.uniq!
+    analysis = analyzeMotionReadings(@unique_sensors, results)
+    count_array = []
+    analysis.each do |k,v|
+      count_array.push(v['hit_count'] > 0 ? 1 : 0)
+    end
+    people_count = count_minimum_occupancy_cmil_front(count_array)
+    @room_empty = false if people_count > 0
   end
 
   # def show
