@@ -135,3 +135,5 @@ tramp
 Session.vim
 .netrwhist
 *~
+
+database.yml

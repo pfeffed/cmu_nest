@@ -1,6 +1,3 @@
-#!/usr/bin/ruby
-
-require 'rubygems'
 require 'mysql2'
 require 'json'
 require 'httparty'
@@ -41,9 +38,9 @@ def initializeDatabase
 	end
 end
 
-def getRecordsInInterval(threshold_time, min, max)
+def getRecordsInInterval(threshold_time, min_mac, max_mac)
 	# Get results in interval
-	results = $sql_client.query("SELECT timestamp, mac AS sensor, motion, acc_z, light FROM readings WHERE timestamp > #{threshold_time} AND mac >= #{min} AND mac <= #{max}")
+	results = $sql_client.query("SELECT timestamp, mac AS sensor, motion, acc_z, light FROM readings WHERE timestamp > #{threshold_time} AND mac >= #{min_mac} AND mac <= #{max_mac}")
 	# Get all unique macs in interval
 	unique_sensors = []
 	results.each do |record|
